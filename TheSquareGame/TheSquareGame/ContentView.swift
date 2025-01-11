@@ -2,6 +2,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    var body: some View {
+        StartView()
+    }
+}
+
+struct GameView: View {
+    @Environment(\.dismiss) var dismiss // Use this to dismiss the current view
+    
     // Track the colors of the rectangles
     @State private var colors: [[Color]] = []
     
@@ -18,7 +26,6 @@ struct ContentView: View {
     @State private var score: Int = 0
     @State private var isGameWon: Bool = false
     
-    // Game initialization
     init() {
         _colors = State(initialValue: generateGrid())
     }
@@ -84,42 +91,38 @@ struct ContentView: View {
             }
         }
         .padding()
+        .navigationTitle("Game")
+        .navigationBarItems(leading: backButton) // Custom back button
     }
     
     private func handleTap(row: Int, column: Int) {
-        // If already selected, ignore the tap
         if selectedIndices.contains(where: { $0 == (row, column) }) {
             return
         }
 
-        // Add to selected rectangles
         selectedIndices.append((row, column))
 
-        // Check if two rectangles are selected
         if selectedIndices.count == 2 {
             let first = selectedIndices[0]
             let second = selectedIndices[1]
 
-            // Check if colors match
             if colors[first.row][first.column] == colors[second.row][second.column] {
                 matchedIndices.append(contentsOf: [first, second])
-                score += 10 // Increase score for a correct match
+                score += 10
 
-                // Check if all rectangles are matched
-                if matchedIndices.count == 8 { // 4 pairs matched (8 rectangles)
+                if matchedIndices.count == 8 { // All pairs matched
                     isGameWon = true
                 }
             } else {
-                feedback = "Try Again!" // Show "Try Again!" for mismatches
+                feedback = "Try Again!"
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    restartGame() // Restart the game on mismatch
+                    restartGame()
                 }
             }
 
-            // Clear selected indices after delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 selectedIndices.removeAll()
-                if feedback == "Try Again!" { feedback = "" } // Clear "Try Again!" after delay
+                if feedback == "Try Again!" { feedback = "" }
             }
         }
     }
@@ -134,19 +137,11 @@ struct ContentView: View {
     }
     
     private func generateGrid() -> [[Color]] {
-        // Available colors
         let allColors: [Color] = [.red, .green, .blue, .yellow]
-        
-        // Create 4 pairs of matching colors
         var colorPool = allColors.flatMap { [$0, $0] }
-        
-        // Add one black rectangle
         colorPool.append(.black)
-        
-        // Shuffle the colors
         colorPool.shuffle()
         
-        // Generate a 3x3 grid
         var grid: [[Color]] = []
         for row in 0..<3 {
             var rowColors: [Color] = []
@@ -158,9 +153,18 @@ struct ContentView: View {
         
         return grid
     }
+    
+    // Custom Back Button
+    private var backButton: some View {
+        Button(action: {
+            dismiss() // Dismiss the current view and go back to StartView
+        }) {
+            Text("")
+                .foregroundColor(.blue)
+        }
+    }
 }
 
 #Preview {
     ContentView()
 }
-
