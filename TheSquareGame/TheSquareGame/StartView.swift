@@ -1,81 +1,88 @@
-
 import SwiftUI
 
 struct StartView: View {
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) { // Add spacing between the buttons
-                Text("Welcome to the Matching Game!")
-                    .font(.largeTitle)
-                    .padding()
-                
-                // Start Game Button
-                NavigationLink(destination: GameView()) {
-                    Text("Start Game")
-                        .padding()
-                        .frame(maxWidth: .infinity) // Make button fill horizontally
-                        .background(Color.blue)
+            ZStack {
+                // Gradient background with overlay pattern
+                LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.teal]), startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+
+                VStack(spacing: 40) { // Increased spacing for a more airy design
+                    // App Title
+                    Text("🎮 Matching Game")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .shadow(radius: 3)
-                }
-                
-                // Guide Button
-                NavigationLink(destination: GuideView())  {
-                    Text("Guide")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.green)
+                        .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 5)
+
+                    // Decorative Image with animation
+                    Image(systemName: "puzzlepiece.extension")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
                         .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .shadow(radius: 3)
+                        .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                        .rotationEffect(Angle(degrees: 10))
+
+                    Spacer()
+
+                    // Buttons
+                    VStack(spacing: 25) {
+                        NavigationLink(destination: SelectView()) {
+                            MenuButton(title: "Start Game", color: .blue)
+                        }
+
+                        NavigationLink(destination: GuideView()) {
+                            MenuButton(title: "Guide", color: .green)
+                        }
+
+                        NavigationLink(destination: HighestScoreView()) {
+                            MenuButton(title: "Highest Score", color: .orange)
+                        }
+
+                        Button(action: exitApp) {
+                            MenuButton(title: "Exit", color: .red)
+                        }
+                    }
+
+                    Spacer()
+
+                    // Footer Text
+                    Text("© 2025 Matching Game Co.")
+                        .font(.footnote)
+                        .foregroundColor(.white.opacity(0.7))
                 }
-                
-                // Highest Score Button
-                NavigationLink(destination: HighestScoreView()) {
-                    Text("Highest Score")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .shadow(radius: 3)
-                }
-                
-                // Exit Button
-                Button(action: exitApp) {
-                    Text("Exit")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .shadow(radius: 3)
-                }
+                .padding(.horizontal, 20)
             }
-            .padding()
-            .navigationTitle("Menu")
+            .navigationBarHidden(true)
         }
     }
-    
-    // Function to show the guide
-    private func showGuide() {
-        print("Guide button tapped") // Replace with your guide logic or navigation
-    }
-    
-    // Function to show the highest score
-    private func showHighestScore() {
-        print("Highest Score button tapped") // Replace with your logic to display the highest score
-    }
-    
+
     // Function to exit the app
     private func exitApp() {
-        print("Exit button tapped") // Replace with exit logic, if required (Apps typically don't exit programmatically in iOS)
-        // To force the app to terminate (not recommended for production apps):
-        // exit(0)
+        print("Exit button tapped") // Placeholder for exit logic
+    }
+}
+
+// Reusable Menu Button Component
+struct MenuButton: View {
+    let title: String
+    let color: Color
+
+    var body: some View {
+        Text(title)
+            .font(.headline)
+            .fontWeight(.semibold)
+            .foregroundColor(.white)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(color)
+            .cornerRadius(15)
+            .shadow(color: color.opacity(0.5), radius: 7, x: 0, y: 5)
     }
 }
 
 #Preview {
     StartView()
 }
+
