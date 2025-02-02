@@ -36,9 +36,7 @@ struct StartView: View {
                             MenuButton(title: "Guide", color: .green)
                         }
 
-                        NavigationLink(destination: HighestScoreView()) {
-                            MenuButton(title: "Highest Score", color: .orange)
-                        }
+                        
 
                         Button(action: exitApp) {
                             MenuButton(title: "Exit", color: .red)

@@ -21,22 +21,24 @@ struct SelectView: View {
                             MenuButton(title: "Medium", color: .yellow)
                         }
                         
-                        Button(action: {
-                            print("Hard selected")
-                        }) {
-                            MenuButton(title: "Hard", color: .red)
+                        VStack(spacing: 15) {
+                            NavigationLink(destination: HardView())  {
+                                MenuButton(title: "Hard", color: .yellow)
+                            }
+                            
+                            
+                            
                         }
+                        
+                        Spacer()
+                        
+                        Text("Choose your challenge level and start the game!")
+                            .font(.footnote)
+                            .foregroundColor(.white.opacity(0.8))
                     }
-                    
-                    Spacer()
-                    
-                    Text("Choose your challenge level and start the game!")
-                        .font(.footnote)
-                        .foregroundColor(.white.opacity(0.8))
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
+                .navigationBarTitle("Select Game", displayMode: .inline)
             }
-            .navigationBarTitle("Select Game", displayMode: .inline)
         }
-    }
-}
+    }}

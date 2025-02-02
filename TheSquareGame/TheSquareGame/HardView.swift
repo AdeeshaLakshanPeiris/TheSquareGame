@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct EasyView: View {
-    @Environment(\ .dismiss) var dismiss
+struct HardView: View {
+    @Environment(\.dismiss) var dismiss
     
     @State private var colors: [[Color]] = []
     @State private var matchedIndices: [(row: Int, column: Int)] = []
@@ -11,10 +11,10 @@ struct EasyView: View {
     @State private var score: Int = 0
     @State private var isGameWon: Bool = false
     @State private var highestScore: Int = 0
-    @State private var timeRemaining: Int = 60
+    @State private var timeRemaining: Int = 120
     @State private var gameTime: Int = 0
     @State private var showAllSquares: Bool = true
-    @State private var revealTime: Int = 3
+    @State private var revealTime: Int = 5
     
     init() {
         _colors = State(initialValue: generateGrid())
@@ -59,15 +59,15 @@ struct EasyView: View {
                         .foregroundColor(.red)
                 }
                 
-                ForEach(0..<3, id: \ .self) { row in
+                ForEach(0..<5, id: \.self) { row in  // Updated from 4 to 5
                     HStack {
-                        ForEach(0..<3, id: \ .self) { column in
+                        ForEach(0..<5, id: \.self) { column in  // Updated from 4 to 5
                             Rectangle()
                                 .fill(
                                     matchedIndices.contains(where: { $0 == (row, column) }) ? Color.gray :
                                     (showAllSquares || revealedIndices.contains(where: { $0 == (row, column) })) ? colors[row][column] : Color.gray
                                 )
-                                .frame(width: 100, height: 100)
+                                .frame(width: 70, height: 70)
                                 .onTapGesture {
                                     if !revealedIndices.contains(where: { $0 == (row, column) }),
                                        colors[row][column] != Color.black,
@@ -101,7 +101,7 @@ struct EasyView: View {
             }
         }
         .padding()
-        .navigationTitle("Easy Mode")
+        .navigationTitle("Hard Game")
         .navigationBarItems(leading: backButton)
         .onAppear(perform: startInitialDelay)
     }
@@ -151,7 +151,7 @@ struct EasyView: View {
                     highestScore = score
                 }
                 
-                if matchedIndices.count == 8 {
+                if matchedIndices.count == 25 {  // Updated from 16 to 25
                     isGameWon = true
                 }
             } else {
@@ -176,28 +176,31 @@ struct EasyView: View {
         feedback = ""
         score = 0
         isGameWon = false
-        timeRemaining = 60
+        timeRemaining = 120
         gameTime = 0
-        revealTime = 3
+        revealTime = 5
         showAllSquares = true
         startInitialDelay()
     }
     
     private func generateGrid() -> [[Color]] {
-        let allColors: [Color] = [.red, .green, .blue, .yellow]
+        let allColors: [Color] = [.red, .green, .blue, .yellow, .orange, .purple, .pink, .cyan]
         var colorPool = allColors.flatMap { [$0, $0] }
-        colorPool.append(.black)
         colorPool.shuffle()
         
+        // Ensure we have enough colors for a 5x5 grid
+        while colorPool.count < 25 {
+            colorPool.append(contentsOf: colorPool)  // Duplicate to fill the grid
+        }
+        
         var grid: [[Color]] = []
-        for row in 0..<3 {
+        for _ in 0..<5 {  // Updated from 4 to 5
             var rowColors: [Color] = []
-            for column in 0..<3 {
-                rowColors.append(colorPool[row * 3 + column])
+            for _ in 0..<5 {  // Updated from 4 to 5
+                rowColors.append(colorPool.removeFirst())
             }
             grid.append(rowColors)
         }
-        
         return grid
     }
     
@@ -212,6 +215,6 @@ struct EasyView: View {
 }
 
 #Preview {
-    EasyView()
+    HardView()
 }
 
